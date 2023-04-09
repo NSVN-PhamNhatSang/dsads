@@ -111,11 +111,11 @@ module nts.uk.com.view.cmm013.f {
                 
                 if (_self.createMode()) {
                     // Create mode                                 
-                    let newCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), _self.sequenceCode(), _self.sequenceName(), null);                           
+                    let newCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), self.sequenceCode(), self.sequenceName(), null);                           
                     _self.saveHandler(newCommand);                                      
                 } else {
                     // Update mode
-                    let updateCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), _self.sequenceCode(), _self.sequenceName(), _self.order());
+                    let updateCommand: SequenceMasterSaveCommand = new SequenceMasterSaveCommand(_self.createMode(), self.sequenceCode(), self.sequenceName(), _self.order());
                     _self.saveHandler(updateCommand);                                       
                 }               
             }
@@ -138,7 +138,7 @@ module nts.uk.com.view.cmm013.f {
                     .ifYes(() => { 
                         // Get item behind removed item
                         let nextCode: string = null;                    
-                        //let currentIndex: number = _self.items().findIndex(item => item.sequenceCode == _self.currentCode()); // ES6 only :(      
+                        //let currentIndex: number = self.items().findIndex(item => item.sequenceCode == self.currentCode()); // ES6 only :(      
                         let currentIndex: number = null;     
                         for (let item of _self.items()) {
                             if (item.sequenceCode === _self.currentCode()) {
@@ -153,7 +153,7 @@ module nts.uk.com.view.cmm013.f {
                         nts.uk.ui.block.grayout();
                         service.removeSequenceMaster(new SequenceMasterRemoveCommand(_self.sequenceCode()))
                             .done((data: any) => {
-                                _.remove(_self.items(), (item) => item.sequenceCode === _self.sequenceCode());
+                                .remove(_self.items(), (item) => item.sequenceCode === self.sequenceCode());
                                 _self.updateOrder().done(() => {
                                     nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                     _self.loadSequenceList()
