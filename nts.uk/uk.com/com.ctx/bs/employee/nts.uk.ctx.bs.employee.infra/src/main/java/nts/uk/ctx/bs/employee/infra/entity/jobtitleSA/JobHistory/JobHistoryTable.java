@@ -30,8 +30,8 @@ public class JobHistoryTable extends ContractUkJpaEntity implements Serializable
 	@Column(name = "HISTORYID")
 	private String historyId;
 	
-	@Column(name = "JOBCODE")
-	private JobCode jobCode;
+	@Column(name = "JOBID")
+	private String jobId;
 	
 	@Column(name = "JOBNAME")
 	private JobName jobName;

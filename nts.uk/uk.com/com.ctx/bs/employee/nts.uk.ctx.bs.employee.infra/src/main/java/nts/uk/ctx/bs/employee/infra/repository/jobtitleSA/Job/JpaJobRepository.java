@@ -16,6 +16,7 @@ public class JpaJobRepository extends JpaRepository implements JobRepository{
     	    entity.setJobId(new JobTablePK(job.getJobInforId()));
     	    entity.setJobCode(job.getJobCode());
     	    entity.setIsAbolition(new Boolean(job.isAbolition()));
+    	    
     	    return entity;
     }
 	@Override

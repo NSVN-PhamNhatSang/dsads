@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitleSA.JobHistory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -17,7 +18,7 @@ public class JpaJobHistoryRepository extends JpaRepository implements JobHistory
     
 	
 	
-	private static final String SELECT_NO_WHERE = "SELECT j.historyId,h.jobCode, j.JobName,j.orderCode,j.isManager,j.startDate,j.endDate FROM JobHistoryTable j ";
+	private static final String SELECT_NO_WHERE = "SELECT j.historyId,h.jobId, j.JobName,j.orderCode,j.isManager,j.startDate,j.endDate FROM JobHistoryTable j ";
 			//+ " INNER JOIN BsymtJobPosMainHist h ON h.histId = j.histId";
 	
 	private static final String SELECT_JOB_TITLE_MAIN_BY_ID = SELECT_NO_WHERE
@@ -27,10 +28,11 @@ public class JpaJobHistoryRepository extends JpaRepository implements JobHistory
 			+ ", JobTable h WHERE j.startDate <= :date And j.endDate >= :date And j.jobinforId=h.jobId";
 	
 	private static final String GET_ALL_BY_JOBID = SELECT_NO_WHERE
-			+ ", JobTable h WHERE h.jobId = :jobId And j.jobinforId=h.jobId ";
-	
+			+ ", JobTable h WHERE h.jobId = :jobId And j.jobiId=h.jobId ";
+	private static final String GET_ALL_BY_JOBCODE =SELECT_NO_WHERE
+			+ ", JobTable h WHERE h.jobId = :jobId And h.jobCode= :jobCode ";
 	private JobHistory toDomain(Object[] entity) {
-		return new JobHistory(String.valueOf(entity[0].toString()), new JobCode(String.valueOf(entity[1].toString())), 
+		return new JobHistory(String.valueOf(entity[0].toString()), String.valueOf(entity[1].toString()), 
 				new JobName(String.valueOf(entity[2].toString())),new OrderCode(String.valueOf(entity[3].toString())),(boolean)entity[4],
 				GeneralDate.fromString(entity[5].toString(), "yyyy-MM-dd"), GeneralDate.fromString(entity[6].toString(), "yyyy-MM-dd"));
 	}
@@ -52,7 +54,7 @@ public class JpaJobHistoryRepository extends JpaRepository implements JobHistory
 		    		.find(jobHistory.getHistoryId(),JobHistoryTable.class)
 		    		.orElse(new JobHistoryTable());
 		    entity.setHistoryId(jobHistory.getHistoryId());
-		    entity.setJobCode(jobHistory.getJobCode());
+		    entity.setJobId(jobHistory.getJobId());
 		    entity.setJobName(jobHistory.getJobName());
 		    entity.setOrderCode(jobHistory.getOrderCode());
 		    entity.setIsManager(new Boolean(jobHistory.isManager()));
@@ -84,12 +86,30 @@ public class JpaJobHistoryRepository extends JpaRepository implements JobHistory
 	}
 
 	@Override
-	public List<JobHistory> findByJobCode(String jobinforId) {
+	public List<JobHistory> findByJobId(String jobinforId) {
 		
 		List<Object[]> listEntity=this.queryProxy().query(GET_ALL_BY_JOBID,Object[].class)
 				                                    .setParameter(":jobId", jobinforId)
 				                                    .getList();
+		List<JobHistory> listJobHis=toListJobHistory(listEntity);
+		Collections.sort(listJobHis);
 		return toListJobHistory(listEntity);
+	}
+
+	@Override
+	public List<JobHistory> findByJobCode(String jobCode) {
+		List<Object[]> listEntity=this.queryProxy().query(GET_ALL_BY_JOBCODE,Object[].class)
+				                                   .setParameter(":jobCode", jobCode)
+				                                   .getList();
+		List<JobHistory> listJobHis=toListJobHistory(listEntity);
+		Collections.sort(listJobHis);
+		return listJobHis;
+	}
+
+	@Override
+	public void removeHis(JobHistory jobHistory) {
+		this.commandProxy().remove(JobHistoryTable.class, jobHistory.getHistoryId());
+		
 	}
 
 }

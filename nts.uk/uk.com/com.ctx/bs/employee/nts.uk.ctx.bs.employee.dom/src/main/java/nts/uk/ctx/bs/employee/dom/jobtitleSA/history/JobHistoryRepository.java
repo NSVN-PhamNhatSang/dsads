@@ -26,7 +26,11 @@ public interface JobHistoryRepository {
 	
 	List<JobHistory> findInDate(GeneralDate date);
 	
-	List<JobHistory> findByJobCode(String jobInfor);
+	List<JobHistory> findByJobId(String jobInfor);
+	
+	List<JobHistory> findByJobCode(String jobCode);
+	
+	void removeHis(JobHistory jobHistory);
 	
 	
 	

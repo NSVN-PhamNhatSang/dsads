@@ -5,23 +5,24 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitleSA.job.JobCode;
 import nts.uk.ctx.bs.employee.dom.jobtitleSA.jobOrder.OrderCode;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-
-public class JobHistory extends AggregateRoot {	
+@Setter
+public class JobHistory extends AggregateRoot implements Comparable<JobHistory>{	
 	private String historyId;
-	private JobCode jobCode;
+	private String jobId;
 	private JobName jobName;
 	private OrderCode orderCode;
 	private boolean isManager;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 	
-	public JobHistory(String historyId, JobCode jobCode, JobName jobName, OrderCode orderCode, boolean isManager,
+	public JobHistory(String historyId, String jobId, JobName jobName, OrderCode orderCode, boolean isManager,
 			GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.historyId = historyId;
-		this.jobCode = jobCode;
+		this.jobId = jobId;
 		this.jobName = jobName;
 		this.orderCode = orderCode;
 		this.isManager = isManager;
@@ -35,8 +36,11 @@ public class JobHistory extends AggregateRoot {
 	 *
 	 * @param newStartDate the new start date
 	 */
-	public void updateStartDate(GeneralDate newStartDate) {
-		
+	public GeneralDate updateStartDate(GeneralDate newStartDate) {
+		   
+		   this.startDate=newStartDate;
+		   
+		   return newStartDate.nextValue(false);
 	}
 	
 	/**
@@ -44,8 +48,14 @@ public class JobHistory extends AggregateRoot {
 	 *
 	 * @param newEndDate the new end date
 	 */
-	public void updateEndDate(GeneralDate newEndDate) {
+	public void addStartDate(GeneralDate newEndDate) {
+           
+	}
 
+
+	@Override
+	public int compareTo(JobHistory jobHis) {
+		return this.startDate.compareTo(jobHis.getStartDate());
 	}
 }
 
