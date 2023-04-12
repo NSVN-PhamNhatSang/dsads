@@ -25,7 +25,7 @@ public class JpaJobHistoryRepository extends JpaRepository implements JobHistory
 			+ " WHERE j.jobTitleId = :jobTitleId";
 
 	private static final String SELECT_BY_DATE = SELECT_NO_WHERE
-			+ ", JobTable h WHERE j.startDate <= :date And j.endDate >= :date And j.jobinforId=h.jobId";
+			+ ", JobTable h WHERE j.startDate <= :date And j.endDate >= :date And j.jobId=h.jobId";
 	
 	private static final String GET_ALL_BY_JOBID = SELECT_NO_WHERE
 			+ ", JobTable h WHERE h.jobId = :jobId And j.jobiId=h.jobId ";

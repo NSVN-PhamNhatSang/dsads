@@ -1,6 +1,9 @@
 package nts.uk.ctx.bs.employee.dom.jobtitleSA.job;
 
+import java.util.List;
 import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 
 
 public interface JobRepository {
@@ -26,6 +29,8 @@ public interface JobRepository {
      * @param jobTitleId the job title id
      * @return the optional
      */
+	List<Job> findByDate(GeneralDate today);
+	
     Optional<Job> findByJobInforId( String jobInforId);
     
     /**
