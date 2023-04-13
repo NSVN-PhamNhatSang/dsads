@@ -31,13 +31,11 @@ public class JpaJobHistoryRepository extends JpaRepository implements JobHistory
 			+ ", JobTable h WHERE h.jobId = :jobId And j.jobiId=h.jobId ";
 	private static final String GET_ALL_BY_JOBCODE =SELECT_NO_WHERE
 			+ ", JobTable h WHERE h.jobId = :jobId And h.jobCode= :jobCode ";
-	private JobHistory toDomain(Object[] entity) {
-		return new JobHistory(String.valueOf(entity[0].toString()), String.valueOf(entity[1].toString()), 
-				new JobName(String.valueOf(entity[2].toString())),new OrderCode(String.valueOf(entity[3].toString())),(boolean)entity[4],
-				GeneralDate.fromString(entity[5].toString(), "yyyy-MM-dd"), GeneralDate.fromString(entity[6].toString(), "yyyy-MM-dd"));
+	private JobHistory toDomain(JobHistoryTable entity) {
+		return new JobHistory(entity.getHistoryId(),entity.getJobId(),new JobName(entity.getJobName()),new OrderCode(entity.getOrderCode()),entity.getIsManager().booleanValue(),entity.getStartDate(),entity.getEndDate());
 	}
 	
-	private List<JobHistory> toListJobHistory(List<Object[]> listEntity) {
+	private List<JobHistory> toListJobHistory(List<JobHistoryTable> listEntity) {
 		List<JobHistory> lstJobHistory = new ArrayList<>();
 		if (!listEntity.isEmpty()) {
 			listEntity.stream().forEach(c -> {
@@ -55,8 +53,8 @@ public class JpaJobHistoryRepository extends JpaRepository implements JobHistory
 		    		.orElse(new JobHistoryTable());
 		    entity.setHistoryId(jobHistory.getHistoryId());
 		    entity.setJobId(jobHistory.getJobId());
-		    entity.setJobName(jobHistory.getJobName());
-		    entity.setOrderCode(jobHistory.getOrderCode());
+		    entity.setJobName(jobHistory.getJobName().v());
+		    entity.setOrderCode(jobHistory.getOrderCode().v());
 		    entity.setIsManager(new Boolean(jobHistory.isManager()));
 		    entity.setStartDate(jobHistory.getStartDate());
 		    entity.setEndDate(jobHistory.getEndDate());
@@ -70,40 +68,42 @@ public class JpaJobHistoryRepository extends JpaRepository implements JobHistory
 	}
 
 	@Override
-	public void updateHistory(JobHistory jobHistory) {
-		   this.commandProxy().update(this.toEntity(jobHistory));
+	public void updateHistory(List<JobHistory> jobHistory) {
+		for(JobHistory jobItem:jobHistory) {
+		   this.commandProxy().update(this.toEntity(jobItem));
+		}
 		
 	}
 
 
 	@Override
 	public List<JobHistory> findInDate(GeneralDate date) {
-		List<Object[]> listEntity=this.queryProxy().query(SELECT_BY_DATE,Object[].class)
+		List<JobHistory> listEntity=this.queryProxy().query(SELECT_BY_DATE,JobHistoryTable.class)
 				                                   .setParameter("date", date)
-		                                           .getList();
+		                                           .getList(c->toDomain(c));
 		
-		return toListJobHistory(listEntity);
+		return listEntity;
 	}
 
 	@Override
 	public List<JobHistory> findByJobId(String jobinforId) {
 		
-		List<Object[]> listEntity=this.queryProxy().query(GET_ALL_BY_JOBID,Object[].class)
+		List<JobHistory> listEntity=this.queryProxy().query(GET_ALL_BY_JOBID,JobHistoryTable.class)
 				                                    .setParameter(":jobId", jobinforId)
-				                                    .getList();
-		List<JobHistory> listJobHis=toListJobHistory(listEntity);
-		Collections.sort(listJobHis);
-		return toListJobHistory(listEntity);
+				                                    .getList(c->toDomain(c));
+		//List<JobHistory> listJobHis=toListJobHistory(listEntity);
+		Collections.sort(listEntity);
+		return listEntity;
 	}
 
 	@Override
 	public List<JobHistory> findByJobCode(String jobCode) {
-		List<Object[]> listEntity=this.queryProxy().query(GET_ALL_BY_JOBCODE,Object[].class)
+		List<JobHistory> listEntity=this.queryProxy().query(GET_ALL_BY_JOBCODE,JobHistoryTable.class)
 				                                   .setParameter(":jobCode", jobCode)
-				                                   .getList();
-		List<JobHistory> listJobHis=toListJobHistory(listEntity);
-		Collections.sort(listJobHis);
-		return listJobHis;
+				                                   .getList(c->toDomain(c));
+		//List<JobHistory> listJobHis=toListJobHistory(listEntity);
+		Collections.sort(listEntity);
+		return listEntity;
 	}
 
 	@Override

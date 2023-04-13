@@ -3,6 +3,9 @@ package nts.uk.ctx.bs.employee.app.find.jobtitleSA.JobAllInfor;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -15,12 +18,15 @@ import nts.uk.ctx.bs.employee.dom.jobtitleSA.job.JobRepository;
 
 @Getter
 @Setter
+@Stateless
 public class JobAllInforFinder {
+	   @Inject
        private JobRepository jobRepository;
-       
+	   
+	   @Inject
        private JobHistoryRepository jobHistoryRepository;
        
-       List<JobFinderDTO> findByDate(GeneralDate today){
+      public  List<JobFinderDTO> findByDate(GeneralDate today){
     	   
     	   List<JobFinderDTO> listJobFinderDto= new ArrayList<>();
     	   
@@ -39,7 +45,7 @@ public class JobAllInforFinder {
     	   
        }
        
-       List<JobHistoryFinderDTO> findByJobId(String jobId){
+      public   List<JobHistoryFinderDTO> findByJobId(String jobId){
     	   List<JobHistoryFinderDTO> listJobHistDTO= new ArrayList<>();
     	   
     	   List<JobHistory> listJobHist=jobHistoryRepository.findByJobId(jobId);

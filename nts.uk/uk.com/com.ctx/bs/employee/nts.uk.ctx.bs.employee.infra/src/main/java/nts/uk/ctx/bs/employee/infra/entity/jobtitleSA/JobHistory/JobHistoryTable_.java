@@ -15,8 +15,8 @@ import nts.uk.ctx.bs.employee.dom.jobtitleSA.jobOrder.OrderCode;
 public class JobHistoryTable_ {
 	 public static volatile SingularAttribute<JobHistoryTable, String> historyId;
 	 public static volatile SingularAttribute<JobHistoryTable, String> jobId;
-	 public static volatile SingularAttribute<JobHistoryTable, JobName> jobName;
-	 public static volatile SingularAttribute<JobHistoryTable, OrderCode> orderCode;
+	 public static volatile SingularAttribute<JobHistoryTable, String> jobName;
+	 public static volatile SingularAttribute<JobHistoryTable, String> orderCode;
 	 public static volatile SingularAttribute<JobHistoryTable, Boolean> isManager;
 	 public static volatile SingularAttribute<JobHistoryTable, GeneralDate> startDate;
 	 public static volatile SingularAttribute<JobHistoryTable, GeneralDate> endDate;

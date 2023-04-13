@@ -14,7 +14,7 @@ public interface JobHistoryRepository {
 	 * @param historyId the history id
 	 * @param endÄ�ate the end date
 	 */
-	void updateHistory(JobHistory jobHistory);
+	void updateHistory(List<JobHistory> jobHistory);
 	
 	/**
 	 * Update lastest history.

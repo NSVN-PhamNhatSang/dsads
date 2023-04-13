@@ -3,8 +3,8 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -14,20 +14,20 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "Job")
+@Table(name = "JOB_TABLE")
 public class JobTable extends ContractUkJpaEntity implements Serializable{
     private static final long serialVersionUID = 1L;
     
-    @EmbeddedId
+    @Id
 	@Basic(optional = false)
-	@Column(name = "JOBID")
-	protected JobTablePK jobId;
+	@Column(name = "JOB_ID")
+	protected String jobId;
     
-    @Column(name = "JOBCODE")
-	private JobCode jobCode;
+    @Column(name = "JOB_CODE")
+	private String jobCode;
 	
 
-	@Column(name = "ISABOLITION")
+	@Column(name = "IS_ABOLITION")
 	private Boolean isAbolition;
 	
 	

@@ -13,49 +13,47 @@ import nts.uk.ctx.bs.employee.dom.jobtitleSA.job.JobCode;
 import nts.uk.ctx.bs.employee.dom.jobtitleSA.job.JobRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitleSA.jobOrder.OrderCode;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitleSA.Job.JobTable;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitleSA.Job.JobTablePK;
 
-public class JpaJobRepository extends JpaRepository implements JobRepository{
-	
-	
-	private static final String SELECT_JOBINFOR_DATE = "SELECT h.jobId,h.isAbolition,h.jobCode FROM JobTable h, JobHistoryTable j where h.jobId=j.jobId AND j.startDate<= :date AND :date<= j.endDate";
+public class JpaJobRepository extends JpaRepository implements JobRepository {
 
-    private JobTable toEntity(Job job){
-    	    JobTable entity= this.queryProxy()
-    	    		.find(new JobTablePK(job.getJobInforId()),  JobTable.class)
-    	    		.orElse(new JobTable());
-    	    entity.setJobId(new JobTablePK(job.getJobInforId()));
-    	    entity.setJobCode(job.getJobCode());
-    	    entity.setIsAbolition(new Boolean(job.isAbolition()));
-    	    
-    	    return entity;
-    }
-    private Job toDomain(Object[] entity) {
-		return new Job(String.valueOf(entity[0].toString()), (boolean)entity[1], new JobCode(String.valueOf(entity[3].toString())));
-				
+	private static final String SELECT_JOBINFOR_DATE = "SELECT h FROM JobTable h, JobHistoryTable j where h.jobId=j.jobId AND j.startDate<= :date AND :date<= j.endDate";
+
+	private JobTable toEntity(Job job) {
+		JobTable entity = this.queryProxy().find(job.getJobInforId(), JobTable.class).orElse(new JobTable());
+		entity.setJobId(job.getJobInforId());
+		entity.setJobCode(job.getJobCode().v());
+		entity.setIsAbolition(new Boolean(job.isAbolition()));
+
+		return entity;
 	}
-    
-    private List<Job> toListJob(List<Object[]> listEntity) {
+
+	private Job toDomain(JobTable entity) {
+		return new Job(entity.getJobId(), entity.getIsAbolition().booleanValue(), new JobCode(entity.getJobCode()));
+
+	}
+
+	/*private List<Job> toListJob(List<JobTable> listEntity) {
 		List<Job> lstJob = new ArrayList<>();
 		if (!listEntity.isEmpty()) {
 			listEntity.stream().forEach(c -> {
 				Job job = toDomain(c);
-				
+
 				lstJob.add(job);
 			});
 		}
 		return lstJob;
-	}
+	}*/
+
 	@Override
 	public void addJob(Job job) {
 		this.commandProxy().insert(this.toEntity(job));
-		
+
 	}
 
 	@Override
 	public void updateJob(Job job) {
 		this.commandProxy().update(this.toEntity(job));
-		
+
 	}
 
 	@Override
@@ -69,14 +67,15 @@ public class JpaJobRepository extends JpaRepository implements JobRepository{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
 	public List<Job> findByDate(GeneralDate today) {
 		
-		List<Object[]> listEntity=this.queryProxy().query(SELECT_JOBINFOR_DATE,Object[].class)
+		 List<Job> listEntity=this.queryProxy().query(SELECT_JOBINFOR_DATE,JobTable.class)
                 .setParameter("date", today)
-                .getList();
+                .getList(c->toDomain(c));
 		
-		return toListJob(listEntity);
+		return listEntity;
 	}
 
 }

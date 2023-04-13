@@ -16,7 +16,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitleSA.history.JobName;
 import nts.uk.ctx.bs.employee.dom.jobtitleSA.job.JobCode;
 import nts.uk.ctx.bs.employee.dom.jobtitleSA.jobOrder.OrderCode;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitleSA.Job.JobTablePK;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
@@ -34,10 +33,10 @@ public class JobHistoryTable extends ContractUkJpaEntity implements Serializable
 	private String jobId;
 	
 	@Column(name = "JOBNAME")
-	private JobName jobName;
+	private String jobName;
 	
 	@Column(name = "ORDERCODE")
-	private OrderCode orderCode;
+	private String orderCode;
 	
 	@Column(name = "ISMANAGER")
 	private Boolean isManager;
