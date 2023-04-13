@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.app.command.jobtitleSA.Job;
 
+import java.util.Optional;
+
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -15,8 +17,13 @@ public class AddJobCommandHandler extends CommandHandlerWithResult<JobCommand,St
 		val command=context.getCommand();
 		String jobId=IdentifierUtil.randomUniqueId();
 		Job job=new Job(jobId,command.isAbolition(),new JobCode(command.getJobCode()));
+		Optional<Job> jobItem=this.jobRepository.findByJobCode(job.getJobCode().v());
+		if(!jobItem.isPresent()) {
 		jobRepository.addJob(job);
 		return jobId;
+		}
+		
+		return null;
 	}
        
 }

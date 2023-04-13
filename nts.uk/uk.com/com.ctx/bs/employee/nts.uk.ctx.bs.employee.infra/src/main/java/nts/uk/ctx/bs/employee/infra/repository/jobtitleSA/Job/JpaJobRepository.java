@@ -17,6 +17,8 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitleSA.Job.JobTable;
 public class JpaJobRepository extends JpaRepository implements JobRepository {
 
 	private static final String SELECT_JOBINFOR_DATE = "SELECT h FROM JobTable h, JobHistoryTable j where h.jobId=j.jobId AND j.startDate<= :date AND :date<= j.endDate";
+	
+	private static final String SELECT_JOBINFOR_JOBCODE="Select h from JobTable h where h.jobCode= :jobCode";
 
 	private JobTable toEntity(Job job) {
 		JobTable entity = this.queryProxy().find(job.getJobInforId(), JobTable.class).orElse(new JobTable());
@@ -72,10 +74,18 @@ public class JpaJobRepository extends JpaRepository implements JobRepository {
 	public List<Job> findByDate(GeneralDate today) {
 		
 		 List<Job> listEntity=this.queryProxy().query(SELECT_JOBINFOR_DATE,JobTable.class)
-                .setParameter("date", today)
+                .setParameter(":date", today)
                 .getList(c->toDomain(c));
 		
 		return listEntity;
+	}
+
+	@Override
+	public Optional<Job> findByJobCode(String jobCode) {
+		return this.queryProxy().query(SELECT_JOBINFOR_JOBCODE,JobTable.class)
+				                     .setParameter(":jobCode", jobCode)
+				                     .getSingle(c->toDomain(c));
+		
 	}
 
 }

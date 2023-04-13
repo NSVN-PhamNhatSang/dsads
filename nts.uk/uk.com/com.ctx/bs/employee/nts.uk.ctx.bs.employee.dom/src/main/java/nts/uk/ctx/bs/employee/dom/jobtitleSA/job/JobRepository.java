@@ -33,6 +33,8 @@ public interface JobRepository {
 	
     Optional<Job> findByJobInforId( String jobInforId);
     
+    Optional<Job> findByJobCode(String jobCode);
+    
     /**
      * Find by history id.
      *
